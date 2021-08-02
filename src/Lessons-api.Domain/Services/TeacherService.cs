@@ -3,6 +3,7 @@ using Lessons_api.Data.Interfaces;
 using Lessons_api.Data.Models;
 using Lessons_api.Domain.Interfaces;
 using Lessons_api.Domain.TeacherModel;
+using ServiceStack.Host;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -23,13 +24,27 @@ namespace Lessons_api.Domain.Services
         {
             var teacher = await _teacherRepository.GetTeacherById(id);
 
-            return _mapper.Map<TeacherDTO>(teacher);
+            if (teacher == null)
+            {
+                throw new HttpException(404, "Not Found");
+            }
+
+            var teacherDTO = _mapper.Map<TeacherDTO>(teacher);
+
+            return teacherDTO;
         }
         public async Task<List<TeacherDTO>> GetAllTeachers()
         {
             var teachers = await _teacherRepository.GetAllTeachers();
 
-            return _mapper.Map<List<TeacherDTO>>(teachers);
+            if (teachers == null)
+            {
+                throw new HttpException(404, "Not Found");
+            }
+
+            var teacherDTOList = _mapper.Map<List<TeacherDTO>>(teachers);
+
+            return teacherDTOList;
         }
 
         public async Task<AddTeacherDTO> AddTeacher(AddTeacherDTO model)
@@ -37,7 +52,14 @@ namespace Lessons_api.Domain.Services
             var teacherEntity = new TeacherEntity() { FirstName = model.FirstName, LastName = model.LastName, Country = model.Country, City = model.City, Age = model.Age };
             var addedTeacher = await _teacherRepository.AddTeacher(teacherEntity);
 
-            return _mapper.Map<AddTeacherDTO>(addedTeacher);
+            if (addedTeacher == null)
+            {
+                throw new HttpException(404, "Not Found");
+            }
+
+            var addedTeacherDTO = _mapper.Map<AddTeacherDTO>(addedTeacher);
+
+            return addedTeacherDTO;
         }
 
         public async Task<UpdateTeacherDTO> UpdateTeacher(int id, UpdateTeacherDTO model)
@@ -45,7 +67,14 @@ namespace Lessons_api.Domain.Services
             var teacherEntity = new TeacherEntity() { FirstName = model.FirstName, LastName = model.LastName, Country = model.Country, City = model.City, Age = model.Age };
             var updatedTeacher = await _teacherRepository.UpdateTeacher(id, teacherEntity);
 
-            return _mapper.Map<UpdateTeacherDTO>(updatedTeacher);
+            if (updatedTeacher == null)
+            {
+                throw new HttpException(404, "Not Found");
+            }
+
+            var updatedTeacherDTO = _mapper.Map<UpdateTeacherDTO>(updatedTeacher);
+
+            return updatedTeacherDTO;
         }
 
         public async Task DeleteTeacherById(int id)

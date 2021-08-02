@@ -3,6 +3,7 @@ using Lessons_api.Data.Interfaces;
 using Lessons_api.Data.Models;
 using Lessons_api.Domain.Interfaces;
 using Lessons_api.Domain.StudentModel;
+using ServiceStack.Host;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -23,14 +24,28 @@ namespace Lessons_api.Domain.Services
         {
             var student = await _studentRepository.GetStudentById(id);
 
-            return _mapper.Map<StudentDTO>(student);
+            if (student == null)
+            {
+                throw new HttpException(404, "Not Found");
+            }
+
+            var studentDTO = _mapper.Map<StudentDTO>(student);
+
+            return studentDTO;
         }
 
         public async Task<List<StudentDTO>> GetAllStudents()
         {
             var students = await _studentRepository.GetAllStudents();
 
-            return _mapper.Map<List<StudentDTO>>(students);
+            if (students == null)
+            {
+                throw new HttpException(404, "Not Found");
+            }
+
+            var studentDTOList = _mapper.Map<List<StudentDTO>>(students);
+
+            return studentDTOList;
         }
 
         public async Task<AddStudentDTO> AddStudent(AddStudentDTO model)
@@ -38,7 +53,14 @@ namespace Lessons_api.Domain.Services
             var studentEntity = new StudentEntity() { FirstName = model.FirstName, LastName = model.LastName, Country = model.Country, City = model.City, Age = model.Age };
             var addedStudent = await _studentRepository.AddStudent(studentEntity);
 
-            return _mapper.Map<AddStudentDTO>(addedStudent);
+            if (addedStudent == null)
+            {
+                throw new HttpException(404, "Not Found");
+            }
+
+            var addedStudentDTO = _mapper.Map<AddStudentDTO>(addedStudent);
+
+            return addedStudentDTO;
         }
 
         public async Task<UpdateStudentDTO> UpdateStudent(int id, UpdateStudentDTO model)
@@ -46,7 +68,14 @@ namespace Lessons_api.Domain.Services
             var studentEntity = new StudentEntity() { FirstName = model.FirstName, LastName = model.LastName, Country = model.Country, City = model.City, Age = model.Age };
             var updatedStudent = await _studentRepository.UpdateStudent(id, studentEntity);
 
-            return _mapper.Map<UpdateStudentDTO>(updatedStudent);
+            if (updatedStudent == null)
+            {
+                throw new HttpException(404, "Not Found");
+            }
+
+            var updatedStudentDTO = _mapper.Map<UpdateStudentDTO>(updatedStudent);
+
+            return updatedStudentDTO;
         }
 
         public async Task DeleteStudentById(int id)
