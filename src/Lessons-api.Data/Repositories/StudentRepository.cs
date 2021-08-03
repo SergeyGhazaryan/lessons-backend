@@ -2,6 +2,7 @@
 using Lessons_api.Data.Interfaces;
 using Lessons_api.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using ServiceStack.Host;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -35,13 +36,18 @@ namespace Lessons_api.Data.Repositories
             await _lessonsContext.Students.AddAsync(studentEntity);
             await _lessonsContext.SaveChangesAsync();
 
-            var result = await _lessonsContext.Students.FindAsync(studentEntity.Id);
-            return result;
+            return studentEntity;
         }
 
         public async Task<StudentEntity> UpdateStudent(int id, StudentEntity studentEntity)
         {
             var updatedStudent = await _lessonsContext.Students.FindAsync(id);
+
+            if (updatedStudent == null)
+            {
+                throw new HttpException(404, "Not Found");
+            }
+
             updatedStudent.FirstName = studentEntity.FirstName;
             updatedStudent.LastName = studentEntity.LastName;
             updatedStudent.Country = studentEntity.Country;
@@ -55,6 +61,12 @@ namespace Lessons_api.Data.Repositories
         public async Task DeleteStudentById(int id)
         {
             var deletedStudent = await _lessonsContext.Students.FindAsync(id);
+
+            if (deletedStudent == null)
+            {
+                throw new HttpException(404, "Not Found");
+            }
+
             _lessonsContext.Students.Remove(deletedStudent);
             await _lessonsContext.SaveChangesAsync();
         }
