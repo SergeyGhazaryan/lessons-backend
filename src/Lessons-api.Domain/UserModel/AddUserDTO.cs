@@ -1,6 +1,6 @@
 ﻿namespace Lessons_api.Domain.UserModel
 {
-    public class AddUserDTO : UserDTO
+    public class AddUserDTO : BaseUserDTO
     {
     }
 }

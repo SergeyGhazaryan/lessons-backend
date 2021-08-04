@@ -61,9 +61,10 @@ namespace Lessons_api.Data.Repositories
             return updatedStudent;
         }
 
-        public async Task DeleteStudentById(int id)
+        public async Task<int> DeleteStudentById(int id)
         {
             var deletedStudent = await _lessonsContext.Students.Where(s => s.Id == id).Include(s => s.User).FirstOrDefaultAsync();
+            var deletedUserId = deletedStudent.UserId;
 
             if (deletedStudent == null)
             {
@@ -72,6 +73,8 @@ namespace Lessons_api.Data.Repositories
 
             _lessonsContext.Students.Remove(deletedStudent);
             await _lessonsContext.SaveChangesAsync();
+
+            return deletedUserId;
         }
     }
 }

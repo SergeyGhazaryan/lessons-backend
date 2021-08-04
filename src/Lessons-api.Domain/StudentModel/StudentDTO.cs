@@ -2,7 +2,7 @@
 
 namespace Lessons_api.Domain.StudentModel
 {
-    public class StudentDTO : UserDTO
+    public class StudentDTO : BaseUserDTO
     {
         public int Id { get; set; }
     }

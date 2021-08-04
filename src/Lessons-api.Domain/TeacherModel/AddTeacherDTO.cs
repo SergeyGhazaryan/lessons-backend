@@ -2,7 +2,7 @@
 
 namespace Lessons_api.Domain.TeacherModel
 {
-    public class AddTeacherDTO : UserDTO
+    public class AddTeacherDTO : BaseUserDTO
     {
     }
 }

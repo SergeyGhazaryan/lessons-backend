@@ -89,7 +89,8 @@ namespace Lessons_api.Domain.Services
 
         public async Task DeleteStudentById(int id)
         {
-            await _studentRepository.DeleteStudentById(id);
+            var deletedUserId = await _studentRepository.DeleteStudentById(id);
+            await _userRepository.DeleteUserById(deletedUserId);
         }
     }
 }
