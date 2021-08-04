@@ -37,6 +37,8 @@ namespace Lessons_api
 
             services.AddControllers();
 
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IStudentService, StudentService>();
             services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<ITeacherService, TeacherService>();

@@ -33,9 +33,9 @@ namespace Lessons_api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddStudent([FromBody] AddStudentDTO model)
+        public async Task<IActionResult> AddStudent([FromBody] int userId)
         {
-            var addedStudent = await _studentService.AddStudent(model);
+            var addedStudent = await _studentService.AddStudent(userId);
 
             return Ok(addedStudent);
         }

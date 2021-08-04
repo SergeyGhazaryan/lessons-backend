@@ -4,6 +4,7 @@ using Lessons_api.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using ServiceStack.Host;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Lessons_api.Data.Repositories
@@ -19,14 +20,14 @@ namespace Lessons_api.Data.Repositories
 
         public async Task<StudentEntity> GetStudentById(int id)
         {
-            var result = await _lessonsContext.Students.FindAsync(id);
+            var result = await _lessonsContext.Students.Where(s => s.Id == id).Include(s => s.User).FirstOrDefaultAsync();
 
             return result;
         }
 
         public async Task<List<StudentEntity>> GetAllStudents()
         {
-            var result = await _lessonsContext.Students.ToListAsync();
+            var result = await _lessonsContext.Students.Include(s => s.User).ToListAsync();
 
             return result;
         }
@@ -39,20 +40,22 @@ namespace Lessons_api.Data.Repositories
             return studentEntity;
         }
 
-        public async Task<StudentEntity> UpdateStudent(int id, StudentEntity studentEntity)
+        public async Task<StudentEntity> UpdateStudent(int id, UserEntity userEntity)
         {
-            var updatedStudent = await _lessonsContext.Students.FindAsync(id);
+            var updatedStudent = await _lessonsContext.Students.Where(s => s.Id == id).Include(s => s.User).FirstOrDefaultAsync();
 
             if (updatedStudent == null)
             {
                 throw new HttpException(404, "Not Found");
             }
 
-            updatedStudent.FirstName = studentEntity.FirstName;
-            updatedStudent.LastName = studentEntity.LastName;
-            updatedStudent.Country = studentEntity.Country;
-            updatedStudent.City = studentEntity.City;
-            updatedStudent.Age = studentEntity.Age;
+            var updatedStudentUser = updatedStudent.User;
+
+            updatedStudentUser.FirstName = userEntity.FirstName;
+            updatedStudentUser.LastName = userEntity.LastName;
+            updatedStudentUser.Country = userEntity.Country;
+            updatedStudentUser.City = userEntity.City;
+            updatedStudentUser.Age = userEntity.Age;
             await _lessonsContext.SaveChangesAsync();
 
             return updatedStudent;
@@ -60,7 +63,7 @@ namespace Lessons_api.Data.Repositories
 
         public async Task DeleteStudentById(int id)
         {
-            var deletedStudent = await _lessonsContext.Students.FindAsync(id);
+            var deletedStudent = await _lessonsContext.Students.Where(s => s.Id == id).Include(s => s.User).FirstOrDefaultAsync();
 
             if (deletedStudent == null)
             {

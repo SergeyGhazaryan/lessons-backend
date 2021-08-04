@@ -11,11 +11,13 @@ namespace Lessons_api.Domain.Services
 {
     public class TeacherService : ITeacherService
     {
+        private readonly IUserRepository _userRepository;
         private readonly ITeacherRepository _teacherRepository;
         private readonly IMapper _mapper;
 
-        public TeacherService(ITeacherRepository teacherRepository, IMapper mapper)
+        public TeacherService(IUserRepository userRepository, ITeacherRepository teacherRepository, IMapper mapper)
         {
+            _userRepository = userRepository;
             _teacherRepository = teacherRepository;
             _mapper = mapper;
         }
@@ -37,7 +39,7 @@ namespace Lessons_api.Domain.Services
         {
             var teachers = await _teacherRepository.GetAllTeachers();
 
-            if (teachers == null)
+            if (teachers.Count == 0)
             {
                 throw new HttpException(404, "Not Found");
             }
@@ -47,9 +49,16 @@ namespace Lessons_api.Domain.Services
             return teacherDTOList;
         }
 
-        public async Task<AddTeacherDTO> AddTeacher(AddTeacherDTO model)
+        public async Task<AddTeacherDTO> AddTeacher(int userId)
         {
-            var teacherEntity = new TeacherEntity() { FirstName = model.FirstName, LastName = model.LastName, Country = model.Country, City = model.City, Age = model.Age };
+            var user = await _userRepository.GetUserById(userId);
+
+            if (user == null)
+            {
+                throw new HttpException(404, "Not Found");
+            }
+
+            var teacherEntity = new TeacherEntity() { UserId = userId };
             var addedTeacher = await _teacherRepository.AddTeacher(teacherEntity);
 
             if (addedTeacher == null)
@@ -64,8 +73,8 @@ namespace Lessons_api.Domain.Services
 
         public async Task<UpdateTeacherDTO> UpdateTeacher(int id, UpdateTeacherDTO model)
         {
-            var teacherEntity = new TeacherEntity() { FirstName = model.FirstName, LastName = model.LastName, Country = model.Country, City = model.City, Age = model.Age };
-            var updatedTeacher = await _teacherRepository.UpdateTeacher(id, teacherEntity);
+            var userEntity = new UserEntity() { FirstName = model.FirstName, LastName = model.LastName, Country = model.Country, City = model.City, Age = model.Age };
+            var updatedTeacher = await _teacherRepository.UpdateTeacher(id, userEntity);
 
             if (updatedTeacher == null)
             {

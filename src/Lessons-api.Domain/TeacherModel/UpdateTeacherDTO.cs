@@ -1,6 +1,8 @@
-﻿namespace Lessons_api.Domain.TeacherModel
+﻿using Lessons_api.Domain.UserModel;
+
+namespace Lessons_api.Domain.TeacherModel
 {
-    public class UpdateTeacherDTO : BaseTeacherDTO
+    public class UpdateTeacherDTO : UserDTO
     {
     }
 }
