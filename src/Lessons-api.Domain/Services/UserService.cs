@@ -50,7 +50,7 @@ namespace Lessons_api.Domain.Services
 
         public async Task<AddUserDTO> AddUser(AddUserDTO model)
         {
-            var userEntity = new UserEntity() { FirstName = model.FirstName, LastName = model.LastName, Country = model.Country, City = model.City, Age = model.Age };
+            var userEntity = _mapper.Map<UserEntity>(model);
             var addedUser = await _userRepository.AddUser(userEntity);
 
             if (addedUser == null)
@@ -64,7 +64,7 @@ namespace Lessons_api.Domain.Services
 
         public async Task<UpdateUserDTO> UpdateUser(int id, UpdateUserDTO model)
         {
-            var userEntity = new UserEntity() { FirstName = model.FirstName, LastName = model.LastName, Country = model.Country, City = model.City, Age = model.Age };
+            var userEntity = _mapper.Map<UserEntity>(model);
             var updatedUser = await _userRepository.UpdateUser(id, userEntity);
 
             if (updatedUser == null)
