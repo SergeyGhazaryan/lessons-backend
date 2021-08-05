@@ -2,13 +2,13 @@
 
 namespace Lessons_api.Data.Models
 {
-    public class TeacherStudentRel
+    public class StudentLessonRel
     {
         [Key]
         public int Id { get; set; }
-        public int TeacherId { get; set; }
-        public TeacherEntity Teacher { get; set; }
         public int StudentId { get; set; }
         public StudentEntity Student { get; set; }
+        public int LessonId { get; set; }
+        public LessonEntity Lesson { get; set; }
     }
 }

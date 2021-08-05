@@ -34,7 +34,7 @@ namespace Lessons_api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddStudent([FromBody] ComingUserDTO model)
+        public async Task<IActionResult> AddStudent([FromBody] CreateUserDTO model)
         {
             var addedStudent = await _studentService.AddStudent(model);
 

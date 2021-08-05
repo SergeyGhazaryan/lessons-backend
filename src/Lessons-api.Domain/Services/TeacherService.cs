@@ -50,7 +50,7 @@ namespace Lessons_api.Domain.Services
             return teacherDTOList;
         }
 
-        public async Task<AddTeacherDTO> AddTeacher(ComingUserDTO model)
+        public async Task<AddTeacherDTO> AddTeacher(CreateUserDTO model)
         {
             var user = await _userRepository.GetUserById(model.UserId);
 

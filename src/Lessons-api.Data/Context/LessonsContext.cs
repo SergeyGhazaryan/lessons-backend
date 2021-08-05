@@ -13,7 +13,9 @@ namespace Lessons_api.Data.Context
 
         public DbSet<TeacherEntity> Teachers { get; set; }
 
-        public DbSet<TeacherStudentRel> TeacherStudentRels { get; set; }
+        public DbSet<LessonEntity> Lessons { get; set; }
+
+        public DbSet<StudentLessonRel> StudentLessonRels { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,16 +27,18 @@ namespace Lessons_api.Data.Context
             modelBuilder.Entity<TeacherEntity>(entity => entity.HasIndex(s => s.UserId).IsUnique());
             modelBuilder.Entity<TeacherEntity>().ToTable("Teachers");
 
-            modelBuilder.Entity<TeacherStudentRel>()
-                        .HasOne(tsr => tsr.Teacher)
-                        .WithMany(t => t.TeacherStudentRels)
-                        .HasForeignKey(tsr => tsr.TeacherId)
+            modelBuilder.Entity<LessonEntity>().ToTable("Lessons");
+
+            modelBuilder.Entity<StudentLessonRel>()
+                        .HasOne(scr => scr.Student)
+                        .WithMany(s => s.StudentLessonRels)
+                        .HasForeignKey(scr => scr.StudentId)
                         .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<TeacherStudentRel>()
-                        .HasOne(tsr => tsr.Student)
-                        .WithMany(s => s.TeacherStudentRels)
-                        .HasForeignKey(tsr => tsr.StudentId)
+            modelBuilder.Entity<StudentLessonRel>()
+                        .HasOne(scr => scr.Lesson)
+                        .WithMany(s => s.StudentLessonRels)
+                        .HasForeignKey(scr => scr.LessonId)
                         .OnDelete(DeleteBehavior.Restrict);
         }
     }

@@ -2,16 +2,19 @@
 
 namespace Lessons_api.Data.Models
 {
-    public class StudentEntity
+    public class LessonEntity
     {
-        public StudentEntity()
+        public LessonEntity()
         {
             StudentLessonRels = new HashSet<StudentLessonRel>();
         }
 
         public int Id { get; set; }
-        public int UserId { get; set; }
-        public UserEntity User { get; set; }
+        public int TeacherId { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Amount { get; set; }
+        public string Language { get; set; }
         public ICollection<StudentLessonRel> StudentLessonRels { get; set; }
     }
 }
