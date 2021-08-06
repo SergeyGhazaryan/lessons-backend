@@ -20,7 +20,7 @@ namespace Lessons_api.Data.Repositories
 
         public async Task<TeacherEntity> GetTeacherById(int id)
         {
-            var result = await _lessonsContext.Teachers.Where(t => t.Id == id).Include(t => t.User).FirstOrDefaultAsync();
+            var result = await _lessonsContext.Teachers.Include(s => s.User).SingleOrDefaultAsync(s => s.Id == id);
 
             return result;
         }
@@ -42,7 +42,7 @@ namespace Lessons_api.Data.Repositories
 
         public async Task<TeacherEntity> UpdateTeacher(int id, UserEntity userEntity)
         {
-            var updatedTeacher = await _lessonsContext.Teachers.Where(t => t.Id == id).Include(t => t.User).FirstOrDefaultAsync();
+            var updatedTeacher = await _lessonsContext.Teachers.Include(t => t.User).SingleOrDefaultAsync(t => t.Id == id);
 
             if (updatedTeacher == null)
             {

@@ -1,6 +1,5 @@
 ﻿using Lessons_api.Domain.Interfaces;
 using Lessons_api.Domain.StudentModel;
-using Lessons_api.Domain.UserModel;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -31,14 +30,6 @@ namespace Lessons_api.Controllers
             var students = await _studentService.GetAllStudents();
 
             return Ok(students);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddStudent([FromBody] CreateUserDTO model)
-        {
-            var addedStudent = await _studentService.AddStudent(model);
-
-            return Ok(addedStudent);
         }
 
         [HttpPut("{id}")]

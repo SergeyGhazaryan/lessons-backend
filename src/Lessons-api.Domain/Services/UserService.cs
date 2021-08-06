@@ -20,7 +20,7 @@ namespace Lessons_api.Domain.Services
             _mapper = mapper;
         }
 
-        public async Task<BaseUserDTO> GetUserById(int id)
+        public async Task<UserDTO> GetUserById(int id)
         {
             var user = await _userRepository.GetUserById(id);
 
@@ -29,7 +29,7 @@ namespace Lessons_api.Domain.Services
                 throw new HttpException(404, "Not Found");
             }
 
-            var userDTO = _mapper.Map<BaseUserDTO>(user);
+            var userDTO = _mapper.Map<UserDTO>(user);
 
             return userDTO;
         }

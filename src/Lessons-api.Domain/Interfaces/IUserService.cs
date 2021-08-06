@@ -6,7 +6,7 @@ namespace Lessons_api.Domain.Interfaces
 {
     public interface IUserService
     {
-        Task<BaseUserDTO> GetUserById(int id);
+        Task<UserDTO> GetUserById(int id);
         Task<List<UserDTO>> GetAllUsers();
         Task<AddUserDTO> AddUser(AddUserDTO model);
         Task<UpdateUserDTO> UpdateUser(int id, UpdateUserDTO model);

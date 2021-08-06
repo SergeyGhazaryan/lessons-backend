@@ -6,6 +6,7 @@ using Lessons_api.Domain.StudentModel;
 using Lessons_api.Domain.UserModel;
 using ServiceStack.Host;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Lessons_api.Domain.Services
@@ -41,7 +42,7 @@ namespace Lessons_api.Domain.Services
         {
             var students = await _studentRepository.GetAllStudents();
 
-            if (students.Count == 0)
+            if (!students.Any())
             {
                 throw new HttpException(404, "Not Found");
             }

@@ -4,7 +4,6 @@ using Lessons_api.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using ServiceStack.Host;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Lessons_api.Data.Repositories
@@ -20,7 +19,7 @@ namespace Lessons_api.Data.Repositories
 
         public async Task<UserEntity> GetUserById(int id)
         {
-            var result = await _lessonsContext.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
+            var result = await _lessonsContext.Users.FindAsync(id);
 
             return result;
         }
@@ -61,7 +60,7 @@ namespace Lessons_api.Data.Repositories
 
         public async Task DeleteUserById(int id)
         {
-            var deletedUser = await _lessonsContext.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
+            var deletedUser = await _lessonsContext.Users.FindAsync(id);
 
             if (deletedUser == null)
             {

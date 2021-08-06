@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lessons_api.Data.Migrations
 {
     [DbContext(typeof(LessonsContext))]
-    [Migration("20210805201228_deleteTeacherStudentRels")]
-    partial class deleteTeacherStudentRels
+    [Migration("20210806111008_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,21 @@ namespace Lessons_api.Data.Migrations
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("LessonEntityStudentEntity", b =>
+                {
+                    b.Property<int>("LessonsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("LessonsId", "StudentsId");
+
+                    b.HasIndex("StudentsId");
+
+                    b.ToTable("LessonEntityStudentEntity");
+                });
+
             modelBuilder.Entity("Lessons_api.Data.Models.LessonEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -27,14 +42,14 @@ namespace Lessons_api.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Amount")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Language")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("TeacherId")
                         .HasColumnType("int");
@@ -43,6 +58,8 @@ namespace Lessons_api.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TeacherId");
 
                     b.ToTable("Lessons");
                 });
@@ -132,6 +149,32 @@ namespace Lessons_api.Data.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("LessonEntityStudentEntity", b =>
+                {
+                    b.HasOne("Lessons_api.Data.Models.LessonEntity", null)
+                        .WithMany()
+                        .HasForeignKey("LessonsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Lessons_api.Data.Models.StudentEntity", null)
+                        .WithMany()
+                        .HasForeignKey("StudentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Lessons_api.Data.Models.LessonEntity", b =>
+                {
+                    b.HasOne("Lessons_api.Data.Models.TeacherEntity", "Teacher")
+                        .WithMany("Lessons")
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Teacher");
+                });
+
             modelBuilder.Entity("Lessons_api.Data.Models.StudentEntity", b =>
                 {
                     b.HasOne("Lessons_api.Data.Models.UserEntity", "User")
@@ -181,6 +224,11 @@ namespace Lessons_api.Data.Migrations
             modelBuilder.Entity("Lessons_api.Data.Models.StudentEntity", b =>
                 {
                     b.Navigation("StudentLessonRels");
+                });
+
+            modelBuilder.Entity("Lessons_api.Data.Models.TeacherEntity", b =>
+                {
+                    b.Navigation("Lessons");
                 });
 #pragma warning restore 612, 618
         }
