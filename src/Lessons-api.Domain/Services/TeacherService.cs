@@ -3,19 +3,23 @@ using Lessons_api.Data.Interfaces;
 using Lessons_api.Data.Models;
 using Lessons_api.Domain.Interfaces;
 using Lessons_api.Domain.TeacherModel;
+using Lessons_api.Domain.UserModel;
 using ServiceStack.Host;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Lessons_api.Domain.Services
 {
     public class TeacherService : ITeacherService
     {
+        private readonly IUserRepository _userRepository;
         private readonly ITeacherRepository _teacherRepository;
         private readonly IMapper _mapper;
 
-        public TeacherService(ITeacherRepository teacherRepository, IMapper mapper)
+        public TeacherService(IUserRepository userRepository, ITeacherRepository teacherRepository, IMapper mapper)
         {
+            _userRepository = userRepository;
             _teacherRepository = teacherRepository;
             _mapper = mapper;
         }
@@ -37,7 +41,7 @@ namespace Lessons_api.Domain.Services
         {
             var teachers = await _teacherRepository.GetAllTeachers();
 
-            if (teachers == null)
+            if (!teachers.Any())
             {
                 throw new HttpException(404, "Not Found");
             }
@@ -47,9 +51,16 @@ namespace Lessons_api.Domain.Services
             return teacherDTOList;
         }
 
-        public async Task<AddTeacherDTO> AddTeacher(AddTeacherDTO model)
+        public async Task<AddTeacherDTO> AddTeacher(CreateUserDTO model)
         {
-            var teacherEntity = new TeacherEntity() { FirstName = model.FirstName, LastName = model.LastName, Country = model.Country, City = model.City, Age = model.Age };
+            var user = await _userRepository.GetUserById(model.UserId);
+
+            if (user == null)
+            {
+                throw new HttpException(404, "Not Found");
+            }
+
+            var teacherEntity = new TeacherEntity() { UserId = model.UserId };
             var addedTeacher = await _teacherRepository.AddTeacher(teacherEntity);
 
             if (addedTeacher == null)
@@ -64,8 +75,8 @@ namespace Lessons_api.Domain.Services
 
         public async Task<UpdateTeacherDTO> UpdateTeacher(int id, UpdateTeacherDTO model)
         {
-            var teacherEntity = new TeacherEntity() { FirstName = model.FirstName, LastName = model.LastName, Country = model.Country, City = model.City, Age = model.Age };
-            var updatedTeacher = await _teacherRepository.UpdateTeacher(id, teacherEntity);
+            var userEntity = _mapper.Map<UserEntity>(model);
+            var updatedTeacher = await _teacherRepository.UpdateTeacher(id, userEntity);
 
             if (updatedTeacher == null)
             {
@@ -79,7 +90,8 @@ namespace Lessons_api.Domain.Services
 
         public async Task DeleteTeacherById(int id)
         {
-            await _teacherRepository.DeleteTeacherById(id);
+            var deletedUserId = await _teacherRepository.DeleteTeacherById(id);
+            await _userRepository.DeleteUserById(deletedUserId);
         }
     }
 }

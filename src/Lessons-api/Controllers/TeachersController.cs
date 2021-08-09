@@ -32,14 +32,6 @@ namespace Lessons_api.Controllers
             return Ok(teachers);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddTeacher([FromBody] AddTeacherDTO model)
-        {
-            var addedTeacher = await _teacherService.AddTeacher(model);
-
-            return Ok(addedTeacher);
-        }
-
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTeacher([FromRoute] int id, [FromBody] UpdateTeacherDTO model)
         {

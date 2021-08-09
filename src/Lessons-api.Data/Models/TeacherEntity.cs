@@ -1,12 +1,17 @@
-﻿namespace Lessons_api.Data.Models
+﻿using System.Collections.Generic;
+
+namespace Lessons_api.Data.Models
 {
     public class TeacherEntity
     {
+        public TeacherEntity()
+        {
+            Lessons = new HashSet<LessonEntity>();
+        }
+
         public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Country { get; set; }
-        public string City { get; set; }
-        public int Age { get; set; }
+        public int UserId { get; set; }
+        public UserEntity User { get; set; }
+        public ICollection<LessonEntity> Lessons { get; set; }
     }
 }

@@ -3,19 +3,23 @@ using Lessons_api.Data.Interfaces;
 using Lessons_api.Data.Models;
 using Lessons_api.Domain.Interfaces;
 using Lessons_api.Domain.StudentModel;
+using Lessons_api.Domain.UserModel;
 using ServiceStack.Host;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Lessons_api.Domain.Services
 {
     public class StudentService : IStudentService
     {
+        private readonly IUserRepository _userRepository;
         private readonly IStudentRepository _studentRepository;
         private readonly IMapper _mapper;
 
-        public StudentService(IStudentRepository studentRepository, IMapper mapper)
+        public StudentService(IUserRepository userRepository, IStudentRepository studentRepository, IMapper mapper)
         {
+            _userRepository = userRepository;
             _studentRepository = studentRepository;
             _mapper = mapper;
         }
@@ -38,7 +42,7 @@ namespace Lessons_api.Domain.Services
         {
             var students = await _studentRepository.GetAllStudents();
 
-            if (students == null)
+            if (!students.Any())
             {
                 throw new HttpException(404, "Not Found");
             }
@@ -48,9 +52,16 @@ namespace Lessons_api.Domain.Services
             return studentDTOList;
         }
 
-        public async Task<AddStudentDTO> AddStudent(AddStudentDTO model)
+        public async Task<AddStudentDTO> AddStudent(CreateUserDTO model)
         {
-            var studentEntity = new StudentEntity() { FirstName = model.FirstName, LastName = model.LastName, Country = model.Country, City = model.City, Age = model.Age };
+            var user = await _userRepository.GetUserById(model.UserId);
+
+            if (user == null)
+            {
+                throw new HttpException(404, "Not Found");
+            }
+
+            var studentEntity = new StudentEntity() { UserId = model.UserId };
             var addedStudent = await _studentRepository.AddStudent(studentEntity);
 
             if (addedStudent == null)
@@ -65,8 +76,8 @@ namespace Lessons_api.Domain.Services
 
         public async Task<UpdateStudentDTO> UpdateStudent(int id, UpdateStudentDTO model)
         {
-            var studentEntity = new StudentEntity() { FirstName = model.FirstName, LastName = model.LastName, Country = model.Country, City = model.City, Age = model.Age };
-            var updatedStudent = await _studentRepository.UpdateStudent(id, studentEntity);
+            var userEntity = _mapper.Map<UserEntity>(model);
+            var updatedStudent = await _studentRepository.UpdateStudent(id, userEntity);
 
             if (updatedStudent == null)
             {
@@ -80,7 +91,8 @@ namespace Lessons_api.Domain.Services
 
         public async Task DeleteStudentById(int id)
         {
-            await _studentRepository.DeleteStudentById(id);
+            var deletedUserId = await _studentRepository.DeleteStudentById(id);
+            await _userRepository.DeleteUserById(deletedUserId);
         }
     }
 }

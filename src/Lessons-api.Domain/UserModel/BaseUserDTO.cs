@@ -1,6 +1,6 @@
-﻿namespace Lessons_api.Domain.StudentModel
+﻿namespace Lessons_api.Domain.UserModel
 {
-    public class BaseStudentDTO
+    public class BaseUserDTO
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

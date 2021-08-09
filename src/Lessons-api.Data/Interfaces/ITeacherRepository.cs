@@ -9,7 +9,7 @@ namespace Lessons_api.Data.Interfaces
         Task<TeacherEntity> GetTeacherById(int id);
         Task<List<TeacherEntity>> GetAllTeachers();
         Task<TeacherEntity> AddTeacher(TeacherEntity teacherEntity);
-        Task<TeacherEntity> UpdateTeacher(int id, TeacherEntity teacherEntity);
-        Task DeleteTeacherById(int id);
+        Task<TeacherEntity> UpdateTeacher(int id, UserEntity userEntity);
+        Task<int> DeleteTeacherById(int id);
     }
 }

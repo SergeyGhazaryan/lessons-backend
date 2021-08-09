@@ -4,6 +4,7 @@ using Lessons_api.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using ServiceStack.Host;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Lessons_api.Data.Repositories
@@ -19,14 +20,14 @@ namespace Lessons_api.Data.Repositories
 
         public async Task<TeacherEntity> GetTeacherById(int id)
         {
-            var result = await _lessonsContext.Teachers.FindAsync(id);
+            var result = await _lessonsContext.Teachers.Include(s => s.User).SingleOrDefaultAsync(s => s.Id == id);
 
             return result;
         }
 
         public async Task<List<TeacherEntity>> GetAllTeachers()
         {
-            var result = await _lessonsContext.Teachers.ToListAsync();
+            var result = await _lessonsContext.Teachers.Include(t => t.User).ToListAsync();
 
             return result;
         }
@@ -39,28 +40,31 @@ namespace Lessons_api.Data.Repositories
             return teacherEntity;
         }
 
-        public async Task<TeacherEntity> UpdateTeacher(int id, TeacherEntity teacherEntity)
+        public async Task<TeacherEntity> UpdateTeacher(int id, UserEntity userEntity)
         {
-            var updatedTeacher = await _lessonsContext.Teachers.FindAsync(id);
+            var updatedTeacher = await _lessonsContext.Teachers.Include(t => t.User).SingleOrDefaultAsync(t => t.Id == id);
 
             if (updatedTeacher == null)
             {
                 throw new HttpException(404, "Not Found");
             }
 
-            updatedTeacher.FirstName = teacherEntity.FirstName;
-            updatedTeacher.LastName = teacherEntity.LastName;
-            updatedTeacher.Country = teacherEntity.Country;
-            updatedTeacher.City = teacherEntity.City;
-            updatedTeacher.Age = teacherEntity.Age;
+            var updatedTeacherUser = updatedTeacher.User;
+
+            updatedTeacherUser.FirstName = userEntity.FirstName;
+            updatedTeacherUser.LastName = userEntity.LastName;
+            updatedTeacherUser.Country = userEntity.Country;
+            updatedTeacherUser.City = userEntity.City;
+            updatedTeacherUser.Age = userEntity.Age;
             await _lessonsContext.SaveChangesAsync();
 
             return updatedTeacher;
         }
 
-        public async Task DeleteTeacherById(int id)
+        public async Task<int> DeleteTeacherById(int id)
         {
-            var deletedTeacher = await _lessonsContext.Teachers.FindAsync(id);
+            var deletedTeacher = await _lessonsContext.Teachers.Where(s => s.Id == id).Include(s => s.User).FirstOrDefaultAsync();
+            var deletedUserId = deletedTeacher.UserId;
 
             if (deletedTeacher == null)
             {
@@ -69,6 +73,8 @@ namespace Lessons_api.Data.Repositories
 
             _lessonsContext.Teachers.Remove(deletedTeacher);
             await _lessonsContext.SaveChangesAsync();
+
+            return deletedUserId;
         }
     }
 }
