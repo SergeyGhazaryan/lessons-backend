@@ -43,6 +43,8 @@ namespace Lessons_api
             services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<ITeacherService, TeacherService>();
             services.AddTransient<ITeacherRepository, TeacherRepository>();
+            services.AddTransient<ILessonService, LessonService>();
+            services.AddTransient<ILessonRepository, LessonRepository>();
 
             services.AddAutoMapper(typeof(AutoMapperConfig));
         }

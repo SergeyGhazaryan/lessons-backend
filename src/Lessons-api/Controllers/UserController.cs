@@ -33,7 +33,7 @@ namespace Lessons_api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddUser([FromBody] AddUserDTO model)
+        public async Task<IActionResult> AddUser([FromBody] BaseUserDTO model)
         {
             var addedUser = await _userService.AddUser(model);
 
@@ -41,7 +41,7 @@ namespace Lessons_api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser([FromRoute] int id, [FromBody] UpdateUserDTO model)
+        public async Task<IActionResult> UpdateUser([FromRoute] int id, [FromBody] BaseUserDTO model)
         {
             var updatedUser = await _userService.UpdateUser(id, model);
 

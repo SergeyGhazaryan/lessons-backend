@@ -1,5 +1,5 @@
 ﻿using Lessons_api.Domain.Interfaces;
-using Lessons_api.Domain.TeacherModel;
+using Lessons_api.Domain.UserModel;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -33,7 +33,7 @@ namespace Lessons_api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTeacher([FromRoute] int id, [FromBody] UpdateTeacherDTO model)
+        public async Task<IActionResult> UpdateTeacher([FromRoute] int id, [FromBody] BaseUserDTO model)
         {
             var updatedTeacher = await _teacherService.UpdateTeacher(id, model);
 
