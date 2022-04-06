@@ -9,8 +9,8 @@ namespace Lessons_api.Domain.Interfaces
     {
         Task<TeacherDTO> GetTeacherById(int id);
         Task<List<TeacherDTO>> GetAllTeachers();
-        Task<AddTeacherDTO> AddTeacher(CreateUserDTO model);
-        Task<UpdateTeacherDTO> UpdateTeacher(int id, UpdateTeacherDTO model);
+        Task<BaseUserDTO> AddTeacher(CreateUserDTO model);
+        Task<BaseUserDTO> UpdateTeacher(int id, BaseUserDTO model);
         Task DeleteTeacherById(int id);
     }
 }

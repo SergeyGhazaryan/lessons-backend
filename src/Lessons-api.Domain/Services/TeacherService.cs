@@ -51,7 +51,7 @@ namespace Lessons_api.Domain.Services
             return teacherDTOList;
         }
 
-        public async Task<AddTeacherDTO> AddTeacher(CreateUserDTO model)
+        public async Task<BaseUserDTO> AddTeacher(CreateUserDTO model)
         {
             var user = await _userRepository.GetUserById(model.UserId);
 
@@ -68,12 +68,12 @@ namespace Lessons_api.Domain.Services
                 throw new HttpException(404, "Not Found");
             }
 
-            var addedTeacherDTO = _mapper.Map<AddTeacherDTO>(addedTeacher);
+            var addedTeacherDTO = _mapper.Map<BaseUserDTO>(addedTeacher);
 
             return addedTeacherDTO;
         }
 
-        public async Task<UpdateTeacherDTO> UpdateTeacher(int id, UpdateTeacherDTO model)
+        public async Task<BaseUserDTO> UpdateTeacher(int id, BaseUserDTO model)
         {
             var userEntity = _mapper.Map<UserEntity>(model);
             var updatedTeacher = await _teacherRepository.UpdateTeacher(id, userEntity);
@@ -83,7 +83,7 @@ namespace Lessons_api.Domain.Services
                 throw new HttpException(404, "Not Found");
             }
 
-            var updatedTeacherDTO = _mapper.Map<UpdateTeacherDTO>(updatedTeacher);
+            var updatedTeacherDTO = _mapper.Map<BaseUserDTO>(updatedTeacher);
 
             return updatedTeacherDTO;
         }
